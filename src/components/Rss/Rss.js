@@ -23,12 +23,6 @@ class Rss extends Component {
         const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
         let parser = new Parser();
-        // parser.parseURL(CORS_PROXY + 'https://www.reddit.com/.rss', function (err, feed) {
-        //     console.log(feed.title);
-        //     feed.items.forEach(function (entry) {
-        //         console.log(entry.title + ':' + entry.link);
-        //     })
-        // });
 
         let feedContent = [];
 
@@ -40,7 +34,15 @@ class Rss extends Component {
         });
 
         Promise.all(feedRequests).then(response => {
-            this.setState({loading:false, feedContent: feedContent});
+            let arr = feedContent.map((item, i) => {
+                return <Feed
+                    key={i}
+                    title={item.title}
+                    url={item.link}
+                    itemsCount={item.items.length} />
+            });
+            console.log(arr);
+            this.setState({ loading: false, feedContent: arr });
         });
 
     }
@@ -48,8 +50,8 @@ class Rss extends Component {
     render() {
         return (
             <div>
-                <p>Rss Feed Info</p>
-                {this.state.loading ? <Spinner /> : <Feed title={this.state.feedContent[0].title} url={this.state.feedContent[0].link} />}
+                <h1>Rss Feed Info</h1>
+                {this.state.loading ? <Spinner /> : this.state.feedContent}
             </div>
         );
     }
